@@ -1,0 +1,102 @@
+Centos 
+========
+	Add InfluxDB to yum, create an influxdb.repo file with below content:
+	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  
+	$ vi /etc/yum.repos.d/influxdb.repo
+		[influxdb]
+		name = InfluxDB Repository - RHEL \$releasever
+		baseurl = https://repos.influxdata.com/rhel/\$releasever/\$basearch/stable
+		enabled = 1
+		gpgcheck = 1
+		gpgkey = https://repos.influxdata.com/influxdb.key
+
+
+	Install InfluxDB
+	- - - - - - - - 
+	$ sudo yum install influxdb
+
+	
+	Configure InfluxDB for Automatic start-up
+	- - - - - - - - - - - - - - - - - - - - - -
+	$ systemctl enable influxdb.service
+
+
+	Start InfluxDB
+	- - - - - - - -
+	$ sudo service influxdb start
+
+
+	Check InfluxDB is Up
+	- - - - - - - - - - -
+		Using InfluxDB Web Interface
+			http://<ip address>:8086
+
+		Using the influx CLI
+			$ influx
+
+	Create your Database
+	- - - - - - - - - - -
+		$ influx
+			> CREATE DATABASE <database_name>
+
+
+	Edit InfluxDB conf to collect data from collectd and access admin portal
+	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+	$ sudo vi /etc/influxdb/influxdb.conf
+		
+		a). Make enable=true under admin section
+			[admin]
+  				# Determines whether the admin service is enabled.
+  				# enabled = true
+
+  		b). To collect data from collectd make enable=true under collectd section
+  			[[collectd]]
+  				# enabled = true
+  				# bind-address = ":25826"		[UDP port that collectd uses to push metrics]
+  				# database = "<databasename>"
+
+	Restart InfluxDB
+	- - - - - - - - -
+		$ sudo service influxdb restart 
+
+	Assecc InfluxDB admin portal
+	- - - - - - - - - - - - - - -
+		http://<ip address>:8083
+
+
+	Allow InfluxDB to be accessed from outside
+	- - - - - - - - - - - - - - - - - - - - - -
+	firewall-cmd --permanent --zone=public --add-port=8086/tcp
+	firewall-cmd --permanent --zone=public --add-port=8083/tcp
+	firewall-cmd --reload
+
+
+
+Mac 
+====
+	Install InfluxDB
+	- - - - - - - - 
+	$ brew install influxdb
+
+	Start InfluxDB
+	- - - - - - - -
+	To have launchd start influxdb now and restart at login:
+  		$ brew services start influxdb
+	if you don't want/need a background service you can just run:
+  		$ influxd -config /usr/local/etc/influxdb.conf
+
+
+  	Edit InfluxDB conf to collect data from collectd and access admin portal
+	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+		$ sudo vi /usr/local/etc/influxdb.conf
+
+		a). Make enable=true under admin section
+			[admin]
+  				# Determines whether the admin service is enabled.
+  				# enabled = true
+
+  		b). To collect data from collectd make enable=true under collectd section
+  			[[collectd]]
+  				# enabled = true
+  				# bind-address = ":25826"		[UDP port that collectd uses to push metrics]
+  				# database = "<databasename>"

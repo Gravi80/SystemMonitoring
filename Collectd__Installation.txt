@@ -1,0 +1,62 @@
+Centos 
+=======
+	Install Collectd
+	- - - - - - - - -
+		RHEL/CentOS 6.x/5.x
+		-------------------
+			$ yum install collectd
+
+		RHEL/CentOS 7.x	
+		---------------
+			$ yum install epel-release
+			$ yum install collectd
+
+
+	Start collectd
+	- - - - - - - -
+		$ service collectd start                        [On RHEL/CentOS 6.x/5.x Systems]
+		$ systemctl start collectd.service              [On RHEL/CentOS 7.x Systems]
+
+
+	Config location
+	- - - - - - - -
+		/etc/collectd.conf
+
+
+	Check collectd types file present [check "TypesDB" value in collectd.conf]
+	- - - - - - - - - - - - - - - - - 
+		$ cat /usr/share/collectd/types.db
+
+			If Not download it from
+				https://github.com/collectd/collectd/blob/master/src/types.db
+
+Mac 
+====
+	Install Collectd
+	- - - - - - - - -
+		$ brew install collectd
+
+	Start collectd
+	- - - - - - - -
+	To have launchd start collectd now and restart at login:
+  		$ brew services start collectd
+	if you don't want/need a background service you can just run:
+  		$/usr/local/sbin/collectd -f -C /usr/local/etc/collectd.conf
+
+
+  	Config location
+	- - - - - - - -	
+		/usr/local/etc/collectd.conf
+
+
+	Check collectd types file present [check "TypesDB" value in collectd.conf]
+	- - - - - - - - - - - - - - - - - 
+		$ cat /usr/local/share/collectd/types.db
+
+			If Not download it from
+				https://github.com/collectd/collectd/blob/master/src/types.db
+
+
+	Push collectd metrics to other machine running InfluxDB [collectd uses udp port]
+	- - - - - - - - - - - - - - - - - - - - - -	- - - - - - - -	- - - - - - - -	- - 	
+		$ sudo firewall-cmd --zone=public --remove-port=25826/udp --permanent

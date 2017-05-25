@@ -1,0 +1,56 @@
+Centos 
+=======
+	Add Grafana to yum, create an influxdb.repo file with below content:
+	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+	$ vi /etc/yum.repos.d/grafana.repo
+		[grafana]
+		name=grafana
+		baseurl=https://packagecloud.io/grafana/stable/el/7/$basearch
+		repo_gpgcheck=1
+		enabled=1
+		gpgcheck=1
+		gpgkey=https://packagecloud.io/gpg.key https://grafanarel.s3.amazonaws.com/RPM-GPG-KEY-grafana
+		sslverify=1
+		sslcacert=/etc/pki/tls/certs/ca-bundle.crt
+
+
+	Install Grafana
+	- - - - - - - - 
+	$ sudo yum install grafana
+
+	
+	Configure Grafana for automatic start-up
+	- - - - - - - - - - - - - - - - - - - - - -
+	$ sudo systemctl enable grafana-server.service
+
+
+	Start Grafana
+	- - - - - - -
+	$ systemctl daemon-reload
+	$ systemctl start grafana-server
+	$ systemctl status grafana-server
+
+	Access Grafana through Web Interface
+	- - - - - - - - - - - - - - - - - - -
+		http://<ip address>:3000
+
+
+	Allow Grafana to be accessed from outside
+	- - - - - - - - - - - - - - - - - - - - - -
+	$ firewall-cmd --permanent --zone=public --add-port=3000/tcp
+	$ firewall-cmd --reload
+
+
+Mac 
+====	
+	Install Grafana
+	- - - - - - - - 
+	$ brew install grafana
+
+	Start Grafana
+	- - - - - - -
+	To have launchd start grafana now and restart at login:
+  		$ brew services start grafana
+	if you don't want/need a background service you can just run:
+  		$ grafana-server --config=/usr/local/etc/grafana/grafana.ini --homepath /usr/local/share/grafana cfg:default.paths.logs=/usr/local/var/log/grafana cfg:default.paths.data=/usr/local/var/lib/grafana cfg:default.paths.plugins=/usr/local/var/lib/grafana/plugins
+  			

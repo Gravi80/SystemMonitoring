@@ -1,0 +1,110 @@
+Functions
+==========
+https://docs.influxdata.com/influxdb/v1.2/query_language/functions/#main-nav
+
+
+Run influx through CLI
+=======================
+$ influx
+	1). See all databases
+		> SHOW DATABASES
+
+	2). Use your databases
+		> USE <DATABASE_NAME>
+	
+	3). List all tables in your database
+		> SHOW MEASUREMENTS
+			name
+			----
+			cpu_value
+			df_value
+			disk_io_time
+			disk_read
+			disk_value
+			disk_weighted_io_time
+			disk_write
+			interface_rx
+			interface_tx
+			load_longterm
+			load_midterm
+			load_shortterm
+			memory_value
+			uptime_value
+			users_value
+	
+	4). List all tables with columns in your database
+		> SHOW SERIES
+			cpu_value,host=hostname,instance=0,type=percent,type_instance=idle
+			cpu_value,host=hostname,instance=0,type=percent,type_instance=interrupt
+			cpu_value,host=hostname,instance=0,type=percent,type_instance=nice
+			cpu_value,host=hostname,instance=0,type=percent,type_instance=softirq
+			cpu_value,host=hostname,instance=0,type=percent,type_instance=steal
+			cpu_value,host=hostname,instance=0,type=percent,type_instance=system
+			cpu_value,host=hostname,instance=0,type=percent,type_instance=user
+			cpu_value,host=hostname,instance=0,type=percent,type_instance=wait
+
+			df_value,host=hostname,instance=sdb,type=df_complex,type_instance=free
+			df_value,host=hostname,instance=sdb,type=df_complex,type_instance=reserved
+			df_value,host=hostname,instance=sdb,type=df_complex,type_instance=used
+			df_value,host=hostname,instance=sdb,type=percent_bytes,type_instance=free
+			df_value,host=hostname,instance=sdb,type=percent_bytes,type_instance=reserved
+			df_value,host=hostname,instance=sdb,type=percent_bytes,type_instance=used
+			
+			disk_io_time,host=hostname,instance=sdb,type=disk_io_time
+			
+			disk_read,host=hostname,instance=sdb,type=disk_merged
+			disk_read,host=hostname,instance=sdb,type=disk_octets
+			disk_read,host=hostname,instance=sdb,type=disk_ops
+			disk_read,host=hostname,instance=sdb,type=disk_time
+
+			disk_value,host=hostname,instance=sdb,type=pending_operations
+			
+			disk_weighted_io_time,host=hostname,instance=sdb,type=disk_io_time
+
+			disk_write,host=hostname,instance=sdb,type=disk_merged
+			disk_write,host=hostname,instance=sdb,type=disk_octets
+			disk_write,host=hostname,instance=sdb,type=disk_ops
+			disk_write,host=hostname,instance=sdb,type=disk_time
+
+			interface_rx,host=hostname,instance=em1,type=if_dropped
+			interface_rx,host=hostname,instance=em1,type=if_errors
+			interface_rx,host=hostname,instance=em1,type=if_octets
+			interface_rx,host=hostname,instance=em1,type=if_packets
+			interface_tx,host=hostname,instance=em1,type=if_dropped
+			interface_tx,host=hostname,instance=em1,type=if_errors
+			interface_tx,host=hostname,instance=em1,type=if_octets
+			interface_tx,host=hostname,instance=em1,type=if_packets
+			
+			load_longterm,host=hostname,type=load
+			load_midterm,host=hostname,type=load
+			load_shortterm,host=hostname,type=load
+			
+			memory_value,host=hostname,type=memory,type_instance=buffered
+			memory_value,host=hostname,type=memory,type_instance=cached
+			memory_value,host=hostname,type=memory,type_instance=free
+			memory_value,host=hostname,type=memory,type_instance=slab_recl
+			memory_value,host=hostname,type=memory,type_instance=slab_unrecl
+			memory_value,host=hostname,type=memory,type_instance=used
+			memory_value,host=hostname,type=percent,type_instance=buffered
+			memory_value,host=hostname,type=percent,type_instance=cached
+			memory_value,host=hostname,type=percent,type_instance=free
+			memory_value,host=hostname,type=percent,type_instance=slab_recl
+			memory_value,host=hostname,type=percent,type_instance=slab_unrecl
+			memory_value,host=hostname,type=percent,type_instance=used
+			
+			uptime_value,host=hostname,type=uptime
+			
+			users_value,host=hostname,type=users
+
+	5). Lets understand [4] output
+		a). "instance" in cpu_value is the CPU core number
+		b). "memory_value" can be represented as absolute "memory" or "percent"
+
+		Units
+		-----
+			Size and time metric units are bytes and milliseconds, respectively.
+			"df" implies "bytes"
+			"cpufreq" implies "Hertz"
+
+	6). Use information from [4] to write your query
+		a). 

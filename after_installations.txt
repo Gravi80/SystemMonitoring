@@ -1,0 +1,132 @@
+1). Edit collectd config file to send data influxDB
+===================================================
+Hostname    "Your_Hostname"
+
+LoadPlugin logfile
+<Plugin logfile>
+	LogLevel info
+	File "/var/log/collectd.log"
+	Timestamp true
+	PrintSeverity false
+</Plugin>
+
+
+LoadPlugin aggregation
+LoadPlugin cpu
+LoadPlugin cpufreq
+LoadPlugin df
+LoadPlugin disk
+LoadPlugin interface
+LoadPlugin load
+LoadPlugin memory
+LoadPlugin network
+LoadPlugin uptime
+LoadPlugin users
+
+----------------------------------------------------------------------------------------------
+If you're capturing system-level metrics on a host with plenty of CPU cores, you've probably noticed that collectd breaks out each CPU metric (e.g. idle, steal and user) for each core. For many users, these individual streams offer little benefit on their own. Fortunately, collectd includes some plugins that will help us aggregate each of these metrics into a single stream on the source host.
+The average and sum of the CPU usage across all CPUs of each host is to be calculated.
+----------------------------------------------------------------------------------------------
+
+<Plugin "aggregation">
+  <Aggregation>
+    Plugin "cpu"
+    Type "cpu"
+
+    GroupBy "Host"
+    GroupBy "TypeInstance"
+
+    CalculateSum true
+    CalculateAverage true
+    CalculateMaximum true
+  </Aggregation>
+</Plugin>
+
+<Plugin cpu>
+   ReportByCpu true
+   ReportByState true
+   ValuesPercentage true
+</Plugin>
+
+----------------------------------------------------------------------------------------------
+Use below commands to identify Device, MountPoint and Disk values for  "df" and "disk" plugin
+$ cat /proc/partitions
+$ lsblk -io KNAME,TYPE,SIZE,MODEL
+$ sudo lsblk -o name,mountpoint,label,size,uuid
+$ df -Th
+----------------------------------------------------------------------------------------------
+
+<Plugin df>
+	Device "/dev/sdb"
+	Device "/dev/sda3"
+	MountPoint "/"
+	MountPoint "/home"
+	FSType "ext4"
+	FSType "xfs"
+	IgnoreSelected false
+	ReportByDevice true
+	ReportInodes false
+	ValuesAbsolute true
+	ValuesPercentage true
+</Plugin>
+
+<Plugin disk>
+	Disk "/^[hs]d[a-f][0-9]?$/"
+	IgnoreSelected false
+	UseBSDName false
+	UdevNameAttr "DEVNAME"
+</Plugin>
+
+<Plugin memory>
+	ValuesAbsolute true
+	ValuesPercentage true
+</Plugin>
+
+<Plugin network>						[will push system metrics to InfluxDB]
+#	# client setup:
+	Server "InfluxDB_IP" "25826"
+#	<Server "239.192.74.66" "25826">
+#		SecurityLevel Encrypt
+#		Username "user"
+#		Password "secret"
+#		Interface "eth0"
+#		ResolveInterval 14400
+#	</Server>
+#	TimeToLive 128
+#
+#	# server setup:
+#	Listen "ff18::efc0:4a42" "25826"
+#	<Listen "239.192.74.66" "25826">
+#		SecurityLevel Sign
+#		AuthFile "/etc/collectd/passwd"
+#		Interface "eth0"
+#	</Listen>
+#	MaxPacketSize 1452
+#
+#	# proxy setup (client and server as above):
+#	Forward true
+#
+#	# statistics about the network plugin itself
+#	ReportStats false
+#
+#	# "garbage collection"
+#	CacheFlush 1800
+</Plugin>
+
+
+2). Add InfluxDB database as DataSouce in Grafana
+==================================================
+
+3). Now we will have data present in our InfluxDD, lets understand how to query InfluxDB query by reading influxdb_query.txt
+=============================================================
+
+4). We are now comfortable in writing influxdb_queriers and can create a DashBoard in Garafana
+==============================================================================================
+	 We can also import already build Dashboard for monitoring system performance.
+	 	https://grafana.com/dashboards/554
+	 	https://grafana.com/dashboards/755
+
+	 You can tweak the Metrics query according to your need
+
+	 For Y-axis of Graphs and types of graphs available can refer
+	 	http://play.grafana.org/dashboard/db/grafana-play-home
