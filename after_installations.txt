@@ -118,7 +118,8 @@ $ df -Th
 
 	Check collectd is sending UPD packets
 	--------------------------------------
-	$ sudo tcpdump -i lo udp port 25826 -vv -X      [use interface=lo only when collectd and 													Influx are present in same machine]
+	$ sudo tcpdump -i lo udp port 25826 -vv -X      
+	# [use interface=lo only when collectd and Influx are present in same machine]
 
 2). Add InfluxDB database as DataSouce in Grafana
 ==================================================
