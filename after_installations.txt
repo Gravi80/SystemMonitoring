@@ -84,7 +84,9 @@ $ df -Th
 
 <Plugin network>						[will push system metrics to InfluxDB]
 #	# client setup:
-	Server "InfluxDB_IP" "25826"
+	Server "InfluxDB_IP" "25826"		
+	#[If InfluxDB installed in same machine, use loopback (lo) interface, which is a default 
+	#interface]
 #	<Server "239.192.74.66" "25826">
 #		SecurityLevel Encrypt
 #		Username "user"
@@ -113,6 +115,10 @@ $ df -Th
 #	CacheFlush 1800
 </Plugin>
 
+
+	Check collectd is sending UPD packets
+	--------------------------------------
+	$ sudo tcpdump -i lo udp port 25826 -vv -X      [use interface=lo only when collectd and 													Influx are present in same machine]
 
 2). Add InfluxDB database as DataSouce in Grafana
 ==================================================

@@ -4,6 +4,10 @@ Centos
 	- - - - - - - - -
 		RHEL/CentOS 6.x/5.x
 		-------------------
+			You first need to enable epel repository under your system.
+				$ wget http://download.fedoraproject.org/pub/epel/6/x86_64/epel-release-6-8.noarch.rpm
+				$ rpm -ivh epel-release-6-8.noarch.rpm
+
 			$ yum install collectd
 
 		RHEL/CentOS 7.x	

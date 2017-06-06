@@ -8,6 +8,7 @@ Run influx through CLI
 $ influx
 	1). See all databases
 		> SHOW DATABASES
+		> show users 			[see all users]
 
 	2). Use your databases
 		> USE <DATABASE_NAME>
