@@ -9,6 +9,7 @@ By using Grafana, plot time-series charts of the collectd data/system metrics.
 The datatypes(GAUGE, DERIVE, COUNTER and ABSOLUTE) present in https://github.com/collectd/collectd/blob/master/src/types.db
 have some meaning
 Read https://collectd.org/wiki/index.php/Data_source
+
 2. InfluxDB__Installation.txt
 3. influx_db_intro.txt
 4. Grafana_Installation.txt
