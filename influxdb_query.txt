@@ -108,4 +108,3 @@ $ influx
 			"cpufreq" implies "Hertz"
 
 	6). Use information from [4] to write your query
-		a). 

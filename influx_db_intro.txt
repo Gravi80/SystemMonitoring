@@ -1,0 +1,70 @@
+InfluxDB can use different storage engines for the underlying storage of data. The current options are LevelDB, RocksDB, HyperLevelDB, and LMDB.
+Read and Write data via HTTP
+
+InfluxDB data structure
+
+* Measurements
+* Series
+* Points
+
+Points
+-------
+Points are like rows which consist of :
+1). time (a timestamp), 
+2). A measurement ("temperature", for example), 
+3). At least one key-value field (the measured value itself, e.g. "external=20", or "internal=30"), and
+4). Zero to many key-value tags containing any metadata about the value (e.g. "host=serverA", "dc=India").
+
+$influx
+>CREATE DATABASE demo
+>USE demo
+>INSERT temparature,host=serverA,dc=India external=25,internal=37
+
+A point with the measurement 
+name=temperature, 
+tags=host and dc 
+measured value= 25 and 37
+
+
+Series
+------- 
+Have zero to many points, one for each discrete sample of the metric.
+
+>INSERT temparature,host=serverA,dc=India external=25,internal=37
+>INSERT temparature,host=serverB,dc=UK external=15,internal=10
+>INSERT memory,host=serverA,dc=India value=100
+>INSERT memory,host=serverB,dc=UK value=150
+>SHOW SERIES
+key
+---
+memory,dc=India,host=serverA
+memory,dc=UK,host=serverB
+temparature,dc=India,host=serverA
+temparature,dc=UK,host=serverB
+
+
+Measurements
+-------------
+Series are grouped together by a string identifier to form a measurement.
+You can have millions of measurement, don't have to define schema upfront.
+
+>SHOW MEASUREMENTS
+name: measurements
+name
+----
+memory
+temparature
+
+
+Query
+------
+Conceptually you can think of a measurement as an SQL table, where the primary index is always time. 
+The timestamp is the Unix time in nanoseconds since January 1, 1970 UTC. (Epoch time)
+
+Tags and fields are effectively columns in the table. tags are indexed, and fields are not. 
+
+> SELECT internal,external from temparature where host='serverA' and time > now() - 1h
+name: temparature
+time                internal external
+----                -------- --------
+1545048470264336000 37       25
